@@ -63,7 +63,7 @@ pipeline {
         stage('Deploy with Docker') {
             steps {
                 sh '''
-                    # Arrêter et supprimer l'ancien conteneur s'il existe
+                    # Arrêter et supprimer l'ancien conteneur en cas d'existence
                     docker stop job-server || true
                     docker rm job-server || true
                     
