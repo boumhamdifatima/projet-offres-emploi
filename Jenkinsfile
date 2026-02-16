@@ -29,9 +29,9 @@ pipeline {
                     if (fileExists(previous)) {
                         def diff = sh(script: "diff ${current} ${previous} || true", returnStdout: true).trim()
                         if (diff == "") {
-                            echo "Aucun changement détecté. Fin du pipeline."
+                            echo "✅ Aucune modification détectée. Fin propre du pipeline."
                             currentBuild.result = 'SUCCESS'
-                            error("Pipeline arrêté : pas de nouvelles offres.")
+                            return // Arrête le pipeline ici sans lever d'erreur
                         }
                     }
                     sh "cp ${current} ${previous}"
