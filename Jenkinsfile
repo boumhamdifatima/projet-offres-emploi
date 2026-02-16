@@ -60,6 +60,22 @@ pipeline {
                 archiveArtifacts artifacts: 'data/*.csv, public/*.html, logs/*.txt', allowEmptyArchive: true
             }
         }
+        stage('Deploy with Docker') {
+            steps {
+                sh '''
+                    # Arrêter et supprimer l'ancien conteneur s'il existe
+                    docker stop job-server || true
+                    docker rm job-server || true
+                    
+                    # Construire la nouvelle image avec le dernier index.html
+                    docker build -t mes-offres-emploi .
+                    
+                    # Lancer le conteneur sur le port 8081 (pour ne pas entrer en conflit avec Jenkins sur 8080)
+                    docker run -d --name job-server -p 8081:80 mes-offres-emploi
+                '''
+                echo "Application déployée sur http://votre-ip:8081"
+            }
+        }
     }
     post {
         always {
